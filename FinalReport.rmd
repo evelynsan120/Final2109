@@ -1,0 +1,257 @@
+---
+title: "Aides Drug"
+author: "Evelyn Sanchez"
+date: "30 October 2019"
+output: html_document
+---
+---
+---
+
+```{r include=FALSE,echo=FALSE}
+require(tidyverse)
+require(tigerstats)
+avast <-read.csv(file="avastivironal.csv",header=TRUE)
+```
+
+# Introduction
+
+<!--In this section you explain what you are trying to show.  Where did the data come from?  What is the research or other question you are trying to answer?.  If you skimp in this section expect to be marked down in your grade. Paint a picture of the project a couple of paragraphs is expected!-->
+
+A new  preventative aides (abacavirinol) is under test in clinical trials. Analyze the effectiveness of this drug across the board. Consider population subgroups by gender, drug use, and sexual orientation. We are going to analyze five question affect ....
+
+# Methods
+
+<!--Decide on your methods:  use "variable analysis" or other appropriate descriptors.  Make sure to choose at least one graphical method and at least one numerical method. Discuss what data manipulations may be needed for example subsetting or other binning procedures and what sort of graphical displays and inferential tools will be used!-->
+In every one of these test we will be looking to see if there is a relationship with categorical variables and the null hypothesis. I will use the bar graph for the graphical description. In descriptive results I will provide a cross tab table. Last, but not least for the interfential results I will use a chi-square test.
+
+
+Question #1 : Is the vaccine affective for the whole population?   
+$H_0$: The vaccine has no effects on whether someone contracts aids or not.
+
+$H_A$: The vaccine does affect whether one contract aids or not.
+
+Question 2: Is vaccine affective for gals?   
+$H_0$: The vaccine has no effects on women who contract aids or not.
+
+$H_A$: The vaccine does have affect if gals contract aids or not.
+
+Question 3: Is vaccine affective for guys?   
+$H_0$: The vaccine has no effects on men who contract aids or not.
+
+$H_A$:The vaccine does have affect if guys contract aids or not.
+
+Question 4: Is vaccine affective for drug users?   
+$H_0$: The vaccine has no effects on drug users if they contract aids or not.
+
+$H_A$: The vaccine does have affect if drug users contract aids or not.
+
+
+Question 5: Is vaccine affective LGBTQ people?   
+$H_0$:The vaccine has no effects on LGBTQ users if they contract aids or not.
+
+$H_0$:The vaccine has affect on LGBTQ users.
+
+
+
+#Results
+
+<!--Divide this section into two sub-sections:  One for your descriptive  results and one for your inferential results.!-->
+
+## Descriptive Results
+
+
+### Graphical Descriptive Results
+
+<!--Graphical results here.  Make sure to show your code.  Provide appropriate labels for axes, giving units if possible, and provide a good title for the graph, too.  Use the graphical results to describe the patterns if any that exist in the data as focused toward the research question. Bottom line is to explain the features of the graph that are relevant to conforming or departing to what is expected by your null hypothesis !-->
+
+
+Question 1:
+```{r}
+barchartGC( ~ infected+treatment, type='percent',main= 'EVERYONE', horizontal = TRUE, data=avast)
+```
+
+The barchart shows that people who use the vaccine are less likely to get aids. So, people who don't have aids use the drug or placebo; the results are very close.
+
+Question 2:
+
+```{r}
+barchartGC( ~ infected+treatment,type='percent',main= 'GAL',data=filter(avast, sex=='gal'),horizontal=TRUE)
+```
+
+This barchart display that gals who use the drug are less likely to get aids. So, gals who don't have aids use the drug or placebo; the results are very close.
+
+Question 3: 
+
+```{r}
+barchartGC( ~ infected+treatment,type='percent',main= 'GUY',data=filter(avast, sex=='guy'),horizontal=TRUE)
+```
+
+This barchart displays that guys who use the drug are more likely to contract aids. So, guys who dont have aids that use the drug or placebo values are very close.
+
+
+Question 4: 
+
+```{r}
+barchartGC( ~ infected+treatment, type='percent', horizontal = TRUE,main= 'DRUGUSER', data=filter(avast, DrugUser=='yes'))
+```
+
+This barchart shows that people who are drug users, who take the drug to prevent aids are far more affective than the drug users who take the placebo. We can also see people who don't have aids that use placebo and the drug are close to the same percentage. It will be departing from the expected null hypothesis.
+
+Question 5:
+
+```{r}
+barchartGC( ~ infected+treatment, type='percent', horizontal = TRUE,main= 'GAY', data=filter(avast, LGBTQ=='gay'))
+```
+
+This barchart demostrates that gay people who use the drug are less likely to get aids. So, gay people who don't have aids use the drug or placebo the results are very close. 
+
+### Numerical Descriptive Results
+
+<!--Numerical results go here. Use the numerical results to describe the patterns if any that exist in the data as focused toward the research question!-->
+
+Question 1:
+```{r}
+tab = xtabs(~infected+treatment, data=filter(avast))
+print(tab)
+```
+
+This table displays if person has aids and use the drug have higher change on thriving. The sample that uses the placebo have lower chance of preventing the condition. People who do not have aids that use the vaccine or placebo have very similar results.
+
+Question 2:
+```{r}
+tab = xtabs(~infected+treatment, data=filter(avast, sex=='gal'))
+print(tab)
+```
+The table presents if a gal who has aides has higher chance on preventing the condition, opposed to the sample that takes the placebo who lower odds. People who do not have aids difference is small. 
+
+
+Question 3:
+```{r}
+tab = xtabs(~infected+treatment, data=filter(avast, sex=='guy'))
+print(tab)
+```
+The table demostrates if a guy who has aids has a lower chance on preventing the condition, opposed to the sample that takes the placebo who have better odds. People who do not have aids have a very little difference.
+
+Question 4:
+```{r}
+tab = xtabs(~infected+treatment, data=filter(avast, DrugUser=='yes'))
+print(tab)
+```
+
+The table provides us with numerical data if a drug user who has aids have surpassing ability for helping the patient. The sample that takes the placebo has less of a chance of preventing aids. Furthermore, people that do not have aids who take either placebo or vaccine don't show a signifiance difference according to the cross tab table data. 
+
+Question 5:
+
+```{r}
+tab = xtabs(~infected+treatment, data= filter(avast, LGBTQ=='gay'))
+print(tab)
+```
+The table exhibits that gay people have greater probablity of preventing the issue with the vaccine, than to those who use placebo. The placebo and vaccine have very little effect on gay people, who do not have aids.
+
+## Inferential Results
+
+<!--State hypothesis clearly.  Make sure your discussion of the inferential test covers all the aspects that the test output produces, such as test statistic, p-value etc.  Make a decision about the null hypothesis, explain the assumptions on which the selected test/procedure was based, and why the chosen procedure satisfys the assumptions and is appropriate to answer the research question!-->
+
+
+Question 1:
+```{r}
+chisqtestGC(~infected+treatment, data=avast)
+```
+$H_0$: The vaccine has no effects on whether someone contracts aids or not.
+
+$H_A$: The vaccine does affect whether someone contract aids or not.
+
+In this case we will reject the null hypothesis because the P-value is less than .05 or 5%.
+
+Question 2:
+
+```{r}
+chisqtestGC(~infected+treatment, data=filter(avast, sex=='gal'))
+```
+
+$H_0$: The vaccine has no effects on women who contract aids or not.
+
+$H_A$: The vaccine does have affect if gals contract aids or not.
+
+In this case we will reject the null hypothesis because the P-value is less than .05 or 5%.
+
+Questin 3:
+
+```{r}
+chisqtestGC(~infected+treatment, data=filter(avast, sex=='guy'))
+```
+
+$H_0$: The vaccine has no effects on men who contract aids or not.
+
+$H_A$:The vaccine does have affect if guys contract aids or not.
+
+In this case we will reject the null hypothesis.
+In this case the vaccine increased the male ability to get aids.
+In this case we will reject the null hypothesis because the P-value is less than .05 or 5%.
+
+Question 4:
+
+```{r}
+chisqtestGC(~infected+treatment, data=filter(avast, DrugUser=='yes'))
+```
+
+$H_0$: The vaccine has no effects on drugusers who contracts aids or not.
+
+$H_A$:The vaccine does have affect if drugusers contract aids or not.
+
+
+In this case we will reject the null hypothesis because the P-value is less than .05 or 5%.
+
+
+Question 5:
+```{r}
+chisqtestGC(~infected+treatment, data=filter(avast, LGBTQ=='gay'))
+```
+
+$H_0$:The vaccine has no effects on LGBTQ users of they contract aids or not.
+
+$H_0$:The vaccine does have affect on LGBTQ users.
+
+In this case we will reject the null hypothesis because the P-value is less than .05 or 5%.
+
+
+# Discussion and Conclusion
+
+<!--Discussion and conclusion here.  If you found a relationship be sure to consider whether the relationship occurs because one of the variavbles causes the other, or whether they perhasps are related for some other reason.  Watch the chapter 6 videos from the GeorgeTown videos collection.!-->
+
+
+Q1: Is the vaccine effective for the whole population?
+
+$H_0$: The vaccine is not effective.  
+$H_A$: The vaccine affects whether or not one contracts AIDS.  
+In this case the p-value for the Chisq test is 0 < 0.05 so we reject the null hypothesis.   
+We have the evidence to support that the vaccine for people with AIDS is effective.
+
+Q2: Does the vaccine prove effective for women?
+
+$H_0$: The vaccine does not prove effective for women.  
+$H_A$: The vaccine affects whether or not a women contracts AIDS.  
+In this case the p-value for the Chisq test is 0 < 0.05 so we reject the null hypothesis.  
+We have evidence to support that the vaccine for women with AIDS is effective.
+
+Q3: Does the vaccine prove effective for men?
+
+$H_0$: The vaccine does not prove to be effective for men.  
+$H_A$: The vaccine affects whether or not men contracts AIDS.  
+The p-value for the Chisq test is 0.0001 < 0.05 so we would reject the null hypothesis.  
+
+We conclude that the vaccine makes guys more likely to contracting AIDS.
+
+Q4: Is the vaccine effective for drug users?
+
+$H_0$: The vaccine is not effetcive for drug users.  
+$H_A$: The vaccine affects whether or not drug users contracts AIDS.  
+The p-value for the Chisq test is 0 < 0.05 so we reject the null hypothesis.  
+We have evidence to support that the vaccine for drug users with AIDS is effective.
+
+Q5: Is the vaccine effective for LGBTQ people?
+
+$H_0$: The vaccine is inaffective in LGBTQ people.  
+$H_A$: The vaccine affects whether or not LGBTQ people contracts AIDS.  
+The p-value for the Chisq test is 0 < 0.05 so we reject the null hypothesis.  
+We have the evidence to support that the vaccine for LGBTQ people with aids is effective.
